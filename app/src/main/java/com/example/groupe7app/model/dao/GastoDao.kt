@@ -36,6 +36,8 @@ interface GastoDao {
     """)
     suspend fun acumuladoDelDia(usuarioId: Long, categoriaId: Long, fecha: LocalDate, excluirId: Long = 0): Int
 
+    @Query("UPDATE gastos SET estado = 'ENVIADO' WHERE rendicionId = :rendicionId AND estado IN ('BORRADOR', 'OBSERVADO')")
+    suspend fun marcarEnviados(rendicionId: Long)
     @Insert
     suspend fun insertar(gasto: Gasto): Long
 
