@@ -49,11 +49,13 @@ dependencies {
 
     // --- NUEVAS DEPENDENCIAS PARA EL TÉCNICO ---
 
+    // ViewModel y navegación en Compose
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+
     // Íconos extendidos
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
-
-    // Navegación Compose
-    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Room Database (usando KSP)
 // Room Database
@@ -62,12 +64,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences)
 
-    // CameraX
-    val cameraVersion = "1.3.2"
-    implementation("androidx.camera:camera-core:$cameraVersion")
-    implementation("androidx.camera:camera-camera2:$cameraVersion")
-    implementation("androidx.camera:camera-lifecycle:$cameraVersion")
-    implementation("androidx.camera:camera-view:$cameraVersion")
 
     // Corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
