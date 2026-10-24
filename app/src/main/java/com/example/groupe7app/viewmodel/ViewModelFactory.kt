@@ -24,8 +24,7 @@ class ViewModelFactory(private val app: Application) : ViewModelProvider.Factory
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val vm: ViewModel = when (modelClass) {
-            // Cada ViewModel nuevo agrega UNA línea aquí. Ejemplo (lo agregamos en el paso 8):
-            // LoginViewModel::class.java -> LoginViewModel(usuarioRepo, session)
+            LoginViewModel::class.java -> LoginViewModel(usuarioRepo, session)
 
             else -> throw IllegalArgumentException("ViewModel no registrado: ${modelClass.simpleName}")
         }
