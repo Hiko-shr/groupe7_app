@@ -50,7 +50,7 @@ class LoginViewModel(
             clave = LoginValidator.validarClave(actual.clave)
         )
         _estado.update { it.copy(errores = errores, intentoEnviar = true, errorGeneral = null) }
-        if (errores.correo != null || errores.clave != null) return   // hay errores: no seguir
+        if (errores.correo != null || errores.clave != null) return
 
         viewModelScope.launch {
             _estado.update { it.copy(cargando = true) }
@@ -58,9 +58,14 @@ class LoginViewModel(
             if (usuario == null) {
                 _estado.update { it.copy(cargando = false, errorGeneral = "Correo o contraseña incorrectos") }
             } else {
-                session.iniciarSesion(usuario.id)                    // queda guardado en DataStore
+                session.iniciarSesion(usuario.id)
                 _estado.update { it.copy(cargando = false, rolIngresado = usuario.rol) }
             }
         }
     }
-}
+
+    // Deja el formulario vacío (se llama cada vez que aparece el Login, por ejemplo al cerrar sesión)
+    fun limpiar() {
+        _estado.value = LoginUiState()
+    }
+}   // ← última llave: limpiar() tiene que quedar ANTES de esta

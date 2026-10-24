@@ -25,7 +25,7 @@ class ViewModelFactory(private val app: Application) : ViewModelProvider.Factory
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val vm: ViewModel = when (modelClass) {
             LoginViewModel::class.java -> LoginViewModel(usuarioRepo, session)
-
+            SesionViewModel::class.java -> SesionViewModel(session, usuarioRepo)
             else -> throw IllegalArgumentException("ViewModel no registrado: ${modelClass.simpleName}")
         }
         return vm as T
