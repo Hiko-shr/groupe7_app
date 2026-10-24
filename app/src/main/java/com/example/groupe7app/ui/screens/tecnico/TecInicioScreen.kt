@@ -38,6 +38,7 @@ fun TecInicioScreen(
     onNavegarDetalle: () -> Unit = {}
 ) {
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = BgColor,
         topBar = {
             Row(
@@ -76,47 +77,6 @@ fun TecInicioScreen(
                 Text("Nuevo gasto", fontWeight = FontWeight.ExtraBold, fontSize = 15.5.sp)
             }
         },
-        bottomBar = {
-            NavigationBar(
-                containerColor = CardBg,
-                tonalElevation = 0.dp,
-                modifier = Modifier.border(1.dp, LineColor)
-            ) {
-                NavigationBarItem(
-                    selected = true,
-                    onClick = { },
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
-                    label = { Text("Inicio", fontWeight = FontWeight.Bold) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color(0xFF0B4A5F),
-                        selectedTextColor = Color(0xFF0B4A5F),
-                        indicatorColor = Color(0xFFD7ECF2),
-                        unselectedIconColor = MutedColor,
-                        unselectedTextColor = MutedColor
-                    )
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = onNavegarRendiciones,
-                    icon = { Icon(Icons.Default.List, contentDescription = "Rendiciones") },
-                    label = { Text("Rendiciones", fontWeight = FontWeight.Bold) },
-                    colors = NavigationBarItemDefaults.colors(
-                        unselectedIconColor = MutedColor,
-                        unselectedTextColor = MutedColor
-                    )
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { },
-                    icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
-                    label = { Text("Perfil", fontWeight = FontWeight.Bold) },
-                    colors = NavigationBarItemDefaults.colors(
-                        unselectedIconColor = MutedColor,
-                        unselectedTextColor = MutedColor
-                    )
-                )
-            }
-        }
     ) { innerPadding ->
         Column(
             modifier = Modifier

@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.groupe7app.model.enums.Rol
-import com.example.groupe7app.ui.screens.comun.PantallaPendiente
 import com.example.groupe7app.ui.screens.login.LoginScreen
 import com.example.groupe7app.viewmodel.EstadoSesion
 import com.example.groupe7app.viewmodel.LoginViewModel
@@ -39,10 +38,9 @@ fun AppNavigation(factory: ViewModelFactory) {
         is EstadoSesion.Activa -> {
             val usuario = sesion.usuario
             when (usuario.rol) {
-                // En el paso 8c cada uno se reemplaza por su grafo: TecnicoNavGraph, JefaturaNavGraph...
-                Rol.TECNICO -> PantallaPendiente("Técnico", usuario.nombre, sesionVm::cerrarSesion)
-                Rol.JEFATURA -> PantallaPendiente("Jefatura", usuario.nombre, sesionVm::cerrarSesion)
-                Rol.FINANZAS -> PantallaPendiente("Finanzas", usuario.nombre, sesionVm::cerrarSesion)
+                Rol.TECNICO -> TecnicoNavGraph(factory, usuario, sesionVm::cerrarSesion)
+                Rol.JEFATURA -> JefaturaNavGraph(factory, usuario, sesionVm::cerrarSesion)
+                Rol.FINANZAS -> FinanzasNavGraph(factory, usuario, sesionVm::cerrarSesion)
             }
         }
     }
