@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.groupe7app.model.entity.Gasto
+import com.example.groupe7app.model.enums.EstadoRendicion
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -31,6 +32,14 @@ interface GastoDao {
     """)
     fun deEquipo(jefaturaId: Long): Flow<List<Gasto>>
 
+    // Finanzas: gastos de todas las rendiciones que están en un estado (APROBADA_JEFATURA o APROBADA_FINANZAS)
+    @Query("""
+        SELECT g.* FROM gastos g
+        INNER JOIN rendiciones r ON r.id = g.rendicionId
+        WHERE r.estado = :estado
+    """)
+    fun deRendicionesEnEstado(estado: EstadoRendicion): Flow<List<Gasto>>
+
     @Query("SELECT * FROM gastos WHERE id = :id")
     suspend fun obtener(id: Long): Gasto?
 
@@ -52,6 +61,10 @@ interface GastoDao {
           AND g.fechaDocumento = :fecha AND g.estado != 'RECHAZADO' AND g.id != :excluirId
     """)
     suspend fun acumuladoDelDia(usuarioId: Long, categoriaId: Long, fecha: LocalDate, excluirId: Long = 0): Int
+
+    // Finanzas confirma los gastos que la jefatura aprobó
+    @Query("UPDATE gastos SET estado = 'APROBADO_FINAL' WHERE rendicionId = :rendicionId AND estado = 'APROBADO'")
+    suspend fun marcarAprobadoFinal(rendicionId: Long)
 
     @Query("UPDATE gastos SET estado = 'ENVIADO' WHERE rendicionId = :rendicionId AND estado IN ('BORRADOR', 'OBSERVADO')")
     suspend fun marcarEnviados(rendicionId: Long)

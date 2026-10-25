@@ -168,6 +168,50 @@ data class RevisionGastoUiState(
     val guardado: Boolean = false
 )
 
+// ---------- Finanzas ----------
+data class RendicionFinanzas(
+    val rendicion: Rendicion, val tecnicoId: Long, val tecnico: String,
+    val cantidadGastos: Int,
+    val aprobado: Int,          // suma de lo aprobado por la jefatura
+    val reembolso: Int          // la parte pagada con dinero propio: lo que se le transfiere al técnico
+)
+
+data class BandejaFinanzasUiState(
+    val rendiciones: List<RendicionFinanzas> = emptyList(),
+    val cargando: Boolean = true
+)
+
+enum class DialogoFinanzas { APROBAR, RECHAZAR }
+
+data class RevisionFinanzasUiState(
+    val rendicion: Rendicion? = null,
+    val tecnico: String = "",
+    val gastos: List<GastoConCategoria> = emptyList(),
+    val aprobado: Int = 0,
+    val reembolso: Int = 0,
+    val editable: Boolean = false,
+    val dialogo: DialogoFinanzas? = null,
+    val comentario: String = "",
+    val errorComentario: String? = null,
+    val finalizada: Boolean = false
+)
+
+data class PagoErrores(
+    val seleccion: String? = null, val numeroOperacion: String? = null, val observacion: String? = null
+)
+
+data class PagoUiState(
+    val pendientes: List<RendicionFinanzas> = emptyList(),
+    val seleccionadas: Set<Long> = emptySet(),
+    val numeroOperacion: String = "",
+    val observacion: String = "",
+    val total: Int = 0,
+    val errores: PagoErrores = PagoErrores(),
+    val guardando: Boolean = false,
+    val mensaje: String? = null,          // confirmación del último pago registrado
+    val cargando: Boolean = true
+)
+
 // ---------- Comunes ----------
 data class PerfilUiState(
     val usuario: Usuario? = null,

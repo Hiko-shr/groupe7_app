@@ -20,6 +20,10 @@ interface UsuarioDao {
     @Query("SELECT * FROM usuarios WHERE jefaturaId = :jefaturaId")
     fun deEquipo(jefaturaId: Long): Flow<List<Usuario>>
 
+    // Finanzas: todos los usuarios (para mostrar el nombre del técnico)
+    @Query("SELECT * FROM usuarios")
+    fun todos(): Flow<List<Usuario>>
+
     // Para el DataSeeder: saber si la base está vacía
     @Query("SELECT COUNT(*) FROM usuarios")
     suspend fun contar(): Int

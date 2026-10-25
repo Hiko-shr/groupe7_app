@@ -5,6 +5,7 @@ import com.example.groupe7app.model.database.AppDatabase
 import com.example.groupe7app.model.entity.Gasto
 import com.example.groupe7app.model.entity.HistorialEstado
 import com.example.groupe7app.model.enums.EstadoGasto
+import com.example.groupe7app.model.enums.EstadoRendicion
 import com.example.groupe7app.model.enums.MotivoRechazo
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -20,6 +21,8 @@ class GastoRepository(private val db: AppDatabase) {
     fun deUsuario(usuarioId: Long): Flow<List<Gasto>> = gastoDao.deUsuario(usuarioId)
 
     fun deEquipo(jefaturaId: Long): Flow<List<Gasto>> = gastoDao.deEquipo(jefaturaId)
+
+    fun deRendicionesEnEstado(estado: EstadoRendicion): Flow<List<Gasto>> = gastoDao.deRendicionesEnEstado(estado)
 
     suspend fun obtener(id: Long): Gasto? = gastoDao.obtener(id)
 

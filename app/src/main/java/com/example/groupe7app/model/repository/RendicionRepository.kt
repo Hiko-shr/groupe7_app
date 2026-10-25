@@ -42,6 +42,12 @@ class RendicionRepository(private val db: AppDatabase) {
     }
 
     // ---------- Jefatura y Finanzas ----------
+    // Finanzas aprueba: los gastos aprobados pasan a APROBADO_FINAL y la rendición queda lista para pagar
+    suspend fun aprobarFinanzas(rendicion: Rendicion, usuarioId: Long) = db.withTransaction {
+        gastoDao.marcarAprobadoFinal(rendicion.id)
+        cambiarEstado(rendicion, EstadoRendicion.APROBADA_FINANZAS, usuarioId, "Aprobada por Finanzas")
+    }
+
     suspend fun cambiarEstado(
         rendicion: Rendicion, nuevo: EstadoRendicion, usuarioId: Long, comentario: String? = null
     ) = db.withTransaction {
