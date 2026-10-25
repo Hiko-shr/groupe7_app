@@ -7,6 +7,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +22,7 @@ import com.example.groupe7app.ui.components.TarjetaRendicion
 import com.example.groupe7app.ui.components.formatoClp
 import com.example.groupe7app.viewmodel.InicioTecnicoUiState
 
+// Diseño de la compañera; solo se cambiaron los símbolos de texto por íconos de Material.
 @Composable
 fun InicioTecnicoContent(
     estado: InicioTecnicoUiState,
@@ -33,7 +38,7 @@ fun InicioTecnicoContent(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
-                Text("+", style = MaterialTheme.typography.titleLarge)
+                Icon(Icons.Filled.Add, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Nuevo gasto")
             }
@@ -109,13 +114,13 @@ fun InicioTecnicoContent(
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("💬", style = MaterialTheme.typography.titleMedium)
+                            Icon(Icons.Filled.Warning, contentDescription = "Observada")
                             Spacer(modifier = Modifier.width(16.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(text = "${resumen.rendicion.numero} observada", fontWeight = FontWeight.Bold)
                                 Text(text = "${resumen.cantidadGastos} gasto(s) necesita(n) tu corrección", style = MaterialTheme.typography.bodySmall)
                             }
-                            Text(">", style = MaterialTheme.typography.titleLarge)
+                            Icon(Icons.Filled.ChevronRight, contentDescription = null)
                         }
                     }
                 }
@@ -128,7 +133,7 @@ fun InicioTecnicoContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    Text("RESUMEN DEL MES", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
+                    Text("RESUMEN", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
                     Text("tus rendiciones", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
                 }
                 Spacer(modifier = Modifier.height(12.dp))
