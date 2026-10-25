@@ -147,9 +147,6 @@ fun GastoContent(
                 etiqueta = "Nº Boleta o Factura",
                 error = null
             )
-
-            Spacer(modifier = Modifier.weight(1f))
-
             Button(
                 onClick = onGuardarClick,
                 modifier = Modifier

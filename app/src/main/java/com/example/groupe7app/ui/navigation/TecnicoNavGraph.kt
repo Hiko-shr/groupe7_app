@@ -16,6 +16,9 @@ import com.example.groupe7app.ui.screens.comun.EnConstruccion
 import com.example.groupe7app.ui.screens.perfil.PerfilScreen
 import com.example.groupe7app.ui.screens.tecnico.TecInicioScreen
 import com.example.groupe7app.viewmodel.ViewModelFactory
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.groupe7app.ui.screens.tecnico.MisRendicionesScreen
+import com.example.groupe7app.viewmodel.MisRendicionesViewModel
 
 @Composable
 fun TecnicoNavGraph(factory: ViewModelFactory, usuario: Usuario, onCerrarSesion: () -> Unit) {
@@ -38,7 +41,15 @@ fun TecnicoNavGraph(factory: ViewModelFactory, usuario: Usuario, onCerrarSesion:
                     onNavegarNuevoGasto = { navController.navigate(Screen.TecNuevaRendicion.route) }
                 )
             }
-            composable(Screen.TecRendiciones.route) { EnConstruccion("Mis rendiciones") }
+                composable(Screen.TecRendiciones.route) {
+                val vm: MisRendicionesViewModel = viewModel(factory = factory)
+                MisRendicionesScreen(
+                    viewModel = vm,
+                    onAbrirRendicion = { id -> navController.navigate(Screen.TecDetalle.crear(id)) },
+                    onNuevaRendicion = { navController.navigate(Screen.TecNuevaRendicion.route) }
+                )
+            }
+            composable(Screen.TecDetalle.route) { EnConstruccion("Detalle de rendición") }
             composable(Screen.TecNuevaRendicion.route) { EnConstruccion("Nueva rendición") }
             composable(Screen.Perfil.route) { PerfilScreen(usuario, onCerrarSesion) }
         }

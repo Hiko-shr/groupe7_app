@@ -26,6 +26,7 @@ class ViewModelFactory(private val app: Application) : ViewModelProvider.Factory
         val vm: ViewModel = when (modelClass) {
             LoginViewModel::class.java -> LoginViewModel(usuarioRepo, session)
             SesionViewModel::class.java -> SesionViewModel(session, usuarioRepo)
+            MisRendicionesViewModel::class.java -> MisRendicionesViewModel(session, rendicionRepo, gastoRepo)
             else -> throw IllegalArgumentException("ViewModel no registrado: ${modelClass.simpleName}")
         }
         return vm as T

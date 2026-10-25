@@ -172,9 +172,6 @@ fun NuevaRendicionContent(
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.weight(1f))
-
             Button(
                 onClick = onGuardarClick,
                 modifier = Modifier

@@ -44,7 +44,7 @@ private val DarkColorScheme = darkColorScheme(
     onPrimaryContainer = OnPrimaryContainerDark,
 
     secondary = SecondaryDark,
-    onSecondary = SecondaryDark,
+    onSecondary = OnSecondaryDark,
     secondaryContainer = SecondaryContainerDark,
     onSecondaryContainer = OnSecondaryContainerDark,
 

@@ -11,6 +11,13 @@ import java.time.LocalDate
 
 @Dao
 interface GastoDao {
+
+    @Query("""
+        SELECT g.* FROM gastos g
+        INNER JOIN rendiciones r ON r.id = g.rendicionId
+        WHERE r.usuarioId = :usuarioId
+    """)
+    fun deUsuario(usuarioId: Long): Flow<List<Gasto>>
     @Query("SELECT * FROM gastos WHERE rendicionId = :rendicionId ORDER BY fechaDocumento")
     fun deRendicion(rendicionId: Long): Flow<List<Gasto>>
 

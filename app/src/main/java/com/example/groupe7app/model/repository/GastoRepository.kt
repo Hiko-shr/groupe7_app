@@ -17,6 +17,8 @@ class GastoRepository(private val db: AppDatabase) {
 
     fun deRendicion(rendicionId: Long): Flow<List<Gasto>> = gastoDao.deRendicion(rendicionId)
 
+    fun deUsuario(usuarioId: Long): Flow<List<Gasto>> = gastoDao.deUsuario(usuarioId)
+
     suspend fun obtener(id: Long): Gasto? = gastoDao.obtener(id)
 
     // ---------- Técnico ----------
