@@ -15,13 +15,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.groupe7app.model.entity.Usuario
-import com.example.groupe7app.ui.screens.comun.EnConstruccion
 import com.example.groupe7app.ui.screens.perfil.PerfilScreen
 import com.example.groupe7app.ui.screens.tecnico.DetalleRendicionScreen
+import com.example.groupe7app.ui.screens.tecnico.GastoScreen
 import com.example.groupe7app.ui.screens.tecnico.InicioTecnicoScreen
 import com.example.groupe7app.ui.screens.tecnico.MisRendicionesScreen
 import com.example.groupe7app.ui.screens.tecnico.NuevaRendicionScreen
 import com.example.groupe7app.viewmodel.DetalleRendicionViewModel
+import com.example.groupe7app.viewmodel.GastoViewModel
 import com.example.groupe7app.viewmodel.InicioTecnicoViewModel
 import com.example.groupe7app.viewmodel.MisRendicionesViewModel
 import com.example.groupe7app.viewmodel.NuevaRendicionViewModel
@@ -86,12 +87,27 @@ fun TecnicoNavGraph(factory: ViewModelFactory, usuario: Usuario, onCerrarSesion:
                     viewModel = vm,
                     rendicionId = id,
                     onVolver = { navController.popBackStack() },
-                    onAgregarGasto = { navController.navigate(Screen.TecGasto.crear(id)) }
+                    onAgregarGasto = { navController.navigate(Screen.TecGasto.crear(id)) },
+                    onAbrirGasto = { gastoId -> navController.navigate(Screen.TecEditarGasto.crear(id, gastoId)) }
                 )
             }
 
-            composable(Screen.TecGasto.route, arguments = argumentoRendicion) {
-                EnConstruccion("Formulario de gasto")
+            // Gasto nuevo
+            composable(Screen.TecGasto.route, arguments = argumentoRendicion) { entrada ->
+                val rendicionId = entrada.arguments?.getLong("rendicionId") ?: 0L
+                val vm: GastoViewModel = viewModel(factory = factory)
+                GastoScreen(vm, rendicionId, gastoId = null, onVolver = { navController.popBackStack() })
+            }
+
+            // Editar un gasto existente (o responder una observación)
+            composable(
+                Screen.TecEditarGasto.route,
+                arguments = argumentoRendicion + navArgument("gastoId") { type = NavType.LongType }
+            ) { entrada ->
+                val rendicionId = entrada.arguments?.getLong("rendicionId") ?: 0L
+                val gastoId = entrada.arguments?.getLong("gastoId") ?: 0L
+                val vm: GastoViewModel = viewModel(factory = factory)
+                GastoScreen(vm, rendicionId, gastoId = gastoId, onVolver = { navController.popBackStack() })
             }
 
             composable(Screen.Perfil.route) { PerfilScreen(usuario, onCerrarSesion) }

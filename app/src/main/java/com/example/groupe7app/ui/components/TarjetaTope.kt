@@ -74,7 +74,9 @@ fun TarjetaTope(
             if (tope.superaTope) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Exceso no admitido: ${formatoClp(tope.exceso)}",
+                    // Si la categoría permite exceso, se admite con justificación; si no, ese monto no se reembolsa
+                    text = if (tope.permiteExceso) "Supera el tope por ${formatoClp(tope.exceso)}: debes justificarlo"
+                    else "Exceso no admitido: ${formatoClp(tope.exceso)}",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.error // El exceso siempre en color error para destacar

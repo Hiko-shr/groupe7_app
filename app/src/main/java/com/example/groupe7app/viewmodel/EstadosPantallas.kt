@@ -78,13 +78,14 @@ data class GastoErrores(
     val categoria: String? = null, val foto: String? = null, val fecha: String? = null,
     val rut: String? = null, val folio: String? = null, val proveedor: String? = null,
     val monto: String? = null, val medioPago: String? = null, val centroCosto: String? = null,
-    val descripcion: String? = null, val justificacion: String? = null
+    val descripcion: String? = null, val justificacion: String? = null, val respuesta: String? = null
 )
 
 data class GastoUiState(
+    val gastoId: Long? = null,                 // null = gasto nuevo
     val categorias: List<Categoria> = emptyList(),
     val categoria: Categoria? = null,
-    val fotoUri: String? = null,
+    val fotoUri: String? = null,               // ruta del archivo de la foto
     val fechaDocumento: LocalDate = LocalDate.now(),
     val tipoDocumento: TipoDocumento = TipoDocumento.BOLETA,
     val rutEmisor: String = "",
@@ -99,8 +100,13 @@ data class GastoUiState(
     val ordenTrabajo: String = "",
     val justificacion: String = "",
     val tope: ResultadoTope? = null,
-    val ubicacion: String? = null,
+    val latitud: Double? = null,
+    val longitud: Double? = null,
     val buscandoUbicacion: Boolean = false,
+    val mensajeUbicacion: String? = null,
+    val comentarioJefatura: String? = null,    // si la jefatura observó el gasto
+    val respuesta: String = "",                // respuesta del técnico a esa observación
+    val editable: Boolean = true,              // false si el gasto ya está en revisión o aprobado
     val errores: GastoErrores = GastoErrores(),
     val guardando: Boolean = false,
     val guardado: Boolean = false

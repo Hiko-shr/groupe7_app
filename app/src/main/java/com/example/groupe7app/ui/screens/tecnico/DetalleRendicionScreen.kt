@@ -12,7 +12,8 @@ fun DetalleRendicionScreen(
     viewModel: DetalleRendicionViewModel,
     rendicionId: Long,
     onVolver: () -> Unit,
-    onAgregarGasto: () -> Unit
+    onAgregarGasto: () -> Unit,
+    onAbrirGasto: (Long) -> Unit
 ) {
     // Le dice al ViewModel qué rendición cargar (el id viene en la ruta)
     LaunchedEffect(rendicionId) { viewModel.cargar(rendicionId) }
@@ -28,7 +29,7 @@ fun DetalleRendicionScreen(
         estado = estado,
         onVolver = onVolver,
         onAgregarGasto = onAgregarGasto,
-        onGastoClick = { },                    // la edición de un gasto llega con el formulario de gasto
+        onGastoClick = onAbrirGasto,
         onEnviarClick = viewModel::onEnviarClick,
         onConfirmarEnvio = viewModel::onConfirmarEnvio,
         onCancelarEnvio = viewModel::onCancelarEnvio

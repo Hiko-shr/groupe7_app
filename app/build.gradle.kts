@@ -64,7 +64,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences)
 
-
+    implementation(libs.coil.compose)              // mostrar la foto
+    implementation(libs.play.services.location)    // GPS
     // Corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
