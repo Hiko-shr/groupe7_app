@@ -6,6 +6,7 @@ import com.example.groupe7app.model.entity.Gasto
 import com.example.groupe7app.model.entity.HistorialEstado
 import com.example.groupe7app.model.entity.Rendicion
 import com.example.groupe7app.model.entity.Usuario
+import com.example.groupe7app.model.enums.EstadoRendicion
 import com.example.groupe7app.model.enums.MedioPago
 import com.example.groupe7app.model.enums.MotivoRechazo
 import com.example.groupe7app.model.enums.TipoDocumento
@@ -136,8 +137,10 @@ data class RevisionRendicionUiState(
     val rendicion: Rendicion? = null,
     val tecnico: String = "",
     val gastos: List<GastoConCategoria> = emptyList(),
+    val total: Int = 0,
     val resueltos: Int = 0,
     val puedeFinalizar: Boolean = false,
+    val resultado: EstadoRendicion? = null,     // en qué estado quedará la rendición al finalizar
     val mostrarConfirmacion: Boolean = false,
     val finalizada: Boolean = false
 )
@@ -159,6 +162,7 @@ data class RevisionGastoUiState(
     val montoAprobado: String = "",
     val comentario: String = "",
     val motivo: MotivoRechazo? = null,
+    val editable: Boolean = true,               // false si la rendición ya no está en revisión
     val errores: ResolucionErrores = ResolucionErrores(),
     val guardando: Boolean = false,
     val guardado: Boolean = false

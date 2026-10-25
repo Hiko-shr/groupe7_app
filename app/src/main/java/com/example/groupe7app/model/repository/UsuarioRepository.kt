@@ -13,4 +13,6 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
     }
 
     fun obtener(id: Long): Flow<Usuario?> = usuarioDao.obtener(id)
+
+    fun deEquipo(jefaturaId: Long): Flow<List<Usuario>> = usuarioDao.deEquipo(jefaturaId)
 }

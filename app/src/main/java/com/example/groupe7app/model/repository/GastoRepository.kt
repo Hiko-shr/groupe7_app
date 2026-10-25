@@ -19,6 +19,8 @@ class GastoRepository(private val db: AppDatabase) {
 
     fun deUsuario(usuarioId: Long): Flow<List<Gasto>> = gastoDao.deUsuario(usuarioId)
 
+    fun deEquipo(jefaturaId: Long): Flow<List<Gasto>> = gastoDao.deEquipo(jefaturaId)
+
     suspend fun obtener(id: Long): Gasto? = gastoDao.obtener(id)
 
     // ---------- Técnico ----------
@@ -42,7 +44,9 @@ class GastoRepository(private val db: AppDatabase) {
     ) = db.withTransaction {
         gastoDao.actualizar(
             gasto.copy(estado = nuevo, montoAprobado = montoAprobado,
-                comentarioRevision = comentario, motivoRechazo = motivo)
+                comentarioRevision = comentario, motivoRechazo = motivo,
+                // Si se vuelve a observar, se borra la respuesta anterior para que el técnico responda de nuevo
+                respuestaTecnico = if (nuevo == EstadoGasto.OBSERVADO) null else gasto.respuestaTecnico)
         )
         historialDao.insertar(
             HistorialEstado(rendicionId = gasto.rendicionId, gastoId = gasto.id, usuarioId = usuarioId,

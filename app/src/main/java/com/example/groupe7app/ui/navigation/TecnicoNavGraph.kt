@@ -26,6 +26,7 @@ import com.example.groupe7app.viewmodel.GastoViewModel
 import com.example.groupe7app.viewmodel.InicioTecnicoViewModel
 import com.example.groupe7app.viewmodel.MisRendicionesViewModel
 import com.example.groupe7app.viewmodel.NuevaRendicionViewModel
+import com.example.groupe7app.viewmodel.SesionViewModel
 import com.example.groupe7app.viewmodel.ViewModelFactory
 
 @Composable
@@ -110,7 +111,10 @@ fun TecnicoNavGraph(factory: ViewModelFactory, usuario: Usuario, onCerrarSesion:
                 GastoScreen(vm, rendicionId, gastoId = gastoId, onVolver = { navController.popBackStack() })
             }
 
-            composable(Screen.Perfil.route) { PerfilScreen(usuario, onCerrarSesion) }
+            composable(Screen.Perfil.route) {
+                val sesionVm: SesionViewModel = viewModel(factory = factory)
+                PerfilScreen(usuario, sesionVm, onCerrarSesion)
+            }
         }
     }
 }

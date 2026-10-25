@@ -32,6 +32,10 @@ class ViewModelFactory(private val app: Application) : ViewModelProvider.Factory
             NuevaRendicionViewModel::class.java -> NuevaRendicionViewModel(session, rendicionRepo, catalogoRepo)
             DetalleRendicionViewModel::class.java -> DetalleRendicionViewModel(session, rendicionRepo, gastoRepo, catalogoRepo)
             GastoViewModel::class.java -> GastoViewModel(session, usuarioRepo, rendicionRepo, gastoRepo, catalogoRepo)
+            // ----- Jefatura -----
+            BandejaJefaturaViewModel::class.java -> BandejaJefaturaViewModel(session, rendicionRepo, gastoRepo, usuarioRepo)
+            RevisionRendicionViewModel::class.java -> RevisionRendicionViewModel(session, rendicionRepo, gastoRepo, catalogoRepo, usuarioRepo)
+            RevisionGastoViewModel::class.java -> RevisionGastoViewModel(session, gastoRepo, rendicionRepo, catalogoRepo, usuarioRepo)
             else -> throw IllegalArgumentException("ViewModel no registrado: ${modelClass.simpleName}")
         }
         return vm as T

@@ -36,9 +36,14 @@ class SesionViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), EstadoSesion.Cargando)
 
-    // El tema lo usará tu compañera en Groupe7AppTheme (paso 6)
+    // Tema elegido en Perfil (null = seguir el del teléfono). MainActivity lo usa en Groupe7AppTheme
     val temaOscuro: StateFlow<Boolean?> = session.temaOscuro
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    // Se guarda en DataStore: la preferencia sobrevive al cerrar la app
+    fun cambiarTema(oscuro: Boolean) {
+        viewModelScope.launch { session.setTemaOscuro(oscuro) }
+    }
 
     fun cerrarSesion() {
         viewModelScope.launch { session.cerrarSesion() }
