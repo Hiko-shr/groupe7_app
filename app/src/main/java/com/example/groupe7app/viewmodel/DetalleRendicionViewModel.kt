@@ -14,6 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -72,6 +73,23 @@ class DetalleRendicionViewModel(
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DetalleRendicionUiState())
+
+    // true cuando la rendición se eliminó (la pantalla vuelve atrás)
+    private val _eliminada = MutableStateFlow(false)
+    val eliminada: StateFlow<Boolean> = _eliminada.asStateFlow()
+
+    // Solo en borrador (el servidor también lo exige: si no, responde 409)
+    fun onEliminar() {
+        val rendicion = estado.value.rendicion ?: return
+        viewModelScope.launch {
+            try {
+                rendicionRepo.eliminar(rendicion)
+                _eliminada.value = true
+            } catch (e: Exception) {
+                envio.update { it.copy(error = e.mensajeApi()) }
+            }
+        }
+    }
 
     fun cargar(id: Long) {
         rendicionId.value = id

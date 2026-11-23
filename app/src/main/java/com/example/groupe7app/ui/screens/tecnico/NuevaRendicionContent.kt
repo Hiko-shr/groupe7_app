@@ -39,7 +39,9 @@ fun NuevaRendicionContent(
     onCentroCostoChange: (String) -> Unit,
     onObservacionChange: (String) -> Unit,
     onGuardar: () -> Unit,
-    onVolver: () -> Unit
+    onVolver: () -> Unit,
+    titulo: String = "Nueva rendición",          // "Editar rendición" en modo edición
+    textoBoton: String = "Crear rendición"       // "Guardar cambios" en modo edición
 ) {
     // Estado puramente visual: qué calendario está abierto ("desde", "hasta" o ninguno)
     var calendarioAbierto by remember { mutableStateOf<String?>(null) }
@@ -48,7 +50,7 @@ fun NuevaRendicionContent(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
-                title = { Text("Nueva rendición") },
+                title = { Text(titulo) },
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
@@ -157,7 +159,7 @@ fun NuevaRendicionContent(
                 modifier = Modifier.fillMaxWidth().height(50.dp)
             ) {
                 if (estado.guardando) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                else Text("Crear rendición")
+                else Text(textoBoton)
             }
         }
     }

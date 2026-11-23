@@ -81,6 +81,17 @@ fun TecnicoNavGraph(factory: ViewModelFactory, usuario: Usuario, onCerrarSesion:
                 )
             }
 
+            composable(Screen.TecEditarRendicion.route, arguments = argumentoRendicion) { entrada ->
+                val id = entrada.arguments?.getLong("rendicionId") ?: 0L
+                val vm: NuevaRendicionViewModel = viewModel(factory = factory)
+                NuevaRendicionScreen(
+                    viewModel = vm,
+                    rendicionId = id,
+                    onVolver = { navController.popBackStack() },
+                    onCreada = { navController.popBackStack() }     // al guardar, vuelve al detalle
+                )
+            }
+
             composable(Screen.TecDetalle.route, arguments = argumentoRendicion) { entrada ->
                 val id = entrada.arguments?.getLong("rendicionId") ?: 0L
                 val vm: DetalleRendicionViewModel = viewModel(factory = factory)
@@ -89,8 +100,8 @@ fun TecnicoNavGraph(factory: ViewModelFactory, usuario: Usuario, onCerrarSesion:
                     rendicionId = id,
                     onVolver = { navController.popBackStack() },
                     onAgregarGasto = { navController.navigate(Screen.TecGasto.crear(id)) },
-                    onAbrirGasto = { gastoId -> navController.navigate(Screen.TecEditarGasto.crear(id, gastoId)) }
-                )
+                    onAbrirGasto = { gastoId -> navController.navigate(Screen.TecEditarGasto.crear(id, gastoId)) },
+                    onEditar = { navController.navigate(Screen.TecEditarRendicion.crear(id)) }                )
             }
 
             // Gasto nuevo

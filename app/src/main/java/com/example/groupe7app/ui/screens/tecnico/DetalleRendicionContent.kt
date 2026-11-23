@@ -6,13 +6,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.groupe7app.model.enums.EstadoRendicion
 import com.example.groupe7app.ui.components.ChipEstado
 import com.example.groupe7app.ui.components.TarjetaGasto
 import com.example.groupe7app.ui.components.formatoClp
@@ -30,9 +37,12 @@ fun DetalleRendicionContent(
     onGastoClick: (Long) -> Unit,
     onEnviarClick: () -> Unit,
     onConfirmarEnvio: () -> Unit,
-    onCancelarEnvio: () -> Unit
+    onCancelarEnvio: () -> Unit,
+    onEditar: () -> Unit,
+    onEliminar: () -> Unit
 ) {
     val rendicion = estado.rendicion
+    var confirmarEliminar by remember { mutableStateOf(false) }      // estado solo visual: el diálogo
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -42,6 +52,19 @@ fun DetalleRendicionContent(
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                    }
+                },
+                actions = {
+                    // Modificar: en borrador u observada. Eliminar: solo en borrador.
+                    if (estado.editable) {
+                        IconButton(onClick = onEditar) {
+                            Icon(Icons.Filled.Edit, contentDescription = "Editar rendición")
+                        }
+                    }
+                    if (rendicion?.estado == EstadoRendicion.BORRADOR) {
+                        IconButton(onClick = { confirmarEliminar = true }) {
+                            Icon(Icons.Filled.Delete, contentDescription = "Eliminar rendición")
+                        }
                     }
                 },
                 windowInsets = WindowInsets(0, 0, 0, 0),
@@ -177,6 +200,21 @@ fun DetalleRendicionContent(
             },
             confirmButton = { TextButton(onClick = onConfirmarEnvio) { Text("Enviar") } },
             dismissButton = { TextButton(onClick = onCancelarEnvio) { Text("Cancelar") } }
+        )
+    }
+
+    // ---------- Confirmación antes de eliminar ----------
+    if (confirmarEliminar && rendicion != null) {
+        AlertDialog(
+            onDismissRequest = { confirmarEliminar = false },
+            title = { Text("¿Eliminar ${rendicion.numero}?") },
+            text = { Text("Se borrarán la rendición y sus ${estado.gastos.size} gasto(s). No se puede deshacer.") },
+            confirmButton = {
+                TextButton(onClick = { confirmarEliminar = false; onEliminar() }) {
+                    Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = { TextButton(onClick = { confirmarEliminar = false }) { Text("Cancelar") } }
         )
     }
 }

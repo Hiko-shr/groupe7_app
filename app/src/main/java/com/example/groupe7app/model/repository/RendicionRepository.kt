@@ -90,8 +90,11 @@ class RendicionRepository(
     }
 
     suspend fun eliminar(rendicion: Rendicion) {
-        api.eliminarRendicion(rendicion.id).exigirExito()
-        rendicionDao.eliminar(rendicion)
+        api.eliminarRendicion(rendicion.id).exigirExito()       // MySQL borra en cascada sus gastos
+        db.withTransaction {
+            gastoDao.eliminarDeRendicionExcepto(rendicion.id, emptyList())   // = borrar todos sus gastos locales
+            rendicionDao.eliminar(rendicion)
+        }
     }
 
     suspend fun enviar(rendicion: Rendicion, usuarioId: Long, comentario: String? = null) {

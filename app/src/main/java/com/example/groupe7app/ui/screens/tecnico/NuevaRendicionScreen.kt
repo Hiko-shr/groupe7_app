@@ -10,9 +10,11 @@ import com.example.groupe7app.viewmodel.NuevaRendicionViewModel
 @Composable
 fun NuevaRendicionScreen(
     viewModel: NuevaRendicionViewModel,
+    rendicionId: Long? = null,                   // con id = editar esa rendición
     onVolver: () -> Unit,
     onCreada: (Long) -> Unit
 ) {
+    LaunchedEffect(rendicionId) { viewModel.cargar(rendicionId) }
     val estado by viewModel.estado.collectAsStateWithLifecycle()
 
     // Cuando el ViewModel avisa que se guardó, la navegación abre el detalle
@@ -30,6 +32,8 @@ fun NuevaRendicionScreen(
         onCentroCostoChange = viewModel::onCentroCostoChange,
         onObservacionChange = viewModel::onObservacionChange,
         onGuardar = viewModel::onGuardar,
-        onVolver = onVolver
+        onVolver = onVolver,
+        titulo = if (rendicionId == null) "Nueva rendición" else "Editar rendición",
+        textoBoton = if (rendicionId == null) "Crear rendición" else "Guardar cambios"
     )
 }

@@ -10,6 +10,9 @@ sealed class Screen(val route: String) {
     data object TecDetalle : Screen("tecnico/rendicion/{rendicionId}") {
         fun crear(rendicionId: Long) = "tecnico/rendicion/$rendicionId"
     }
+    data object TecEditarRendicion : Screen("tecnico/rendicion/{rendicionId}/editar") {
+        fun crear(rendicionId: Long) = "tecnico/rendicion/$rendicionId/editar"
+    }
     data object TecGasto : Screen("tecnico/rendicion/{rendicionId}/gasto") {
         fun crear(rendicionId: Long) = "tecnico/rendicion/$rendicionId/gasto"
     }

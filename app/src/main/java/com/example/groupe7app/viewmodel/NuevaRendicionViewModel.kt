@@ -29,10 +29,29 @@ class NuevaRendicionViewModel(
     // Después del primer intento de guardar, cada cambio se vuelve a validar
     private var intentoGuardar = false
 
+    // Si se está editando, la rendición tal como está en el servidor (null = rendición nueva)
+    private var original: Rendicion? = null
+
     init {
         // Carga los centros de costo desde Room para el desplegable
         viewModelScope.launch {
             catalogoRepo.centrosCosto.collect { lista -> _estado.update { it.copy(centros = lista) } }
+        }
+    }
+
+    // Modo edición: llena el formulario con la rendición existente (rendicionId = null → nueva)
+    fun cargar(rendicionId: Long?) {
+        if (rendicionId == null || original != null) return
+        viewModelScope.launch {
+            val r = rendicionRepo.obtener(rendicionId).first() ?: return@launch
+            original = r
+            _estado.update {
+                it.copy(
+                    titulo = r.titulo, tipo = r.tipo, destino = r.destino ?: "",
+                    desde = r.desde, hasta = r.hasta, centroCosto = r.centroCosto,
+                    observacion = r.observacion ?: ""
+                )
+            }
         }
     }
 
@@ -55,19 +74,26 @@ class NuevaRendicionViewModel(
             val usuarioId = session.usuarioId.first() ?: return@launch
             _estado.update { it.copy(guardando = true) }
             try {
-                val id = rendicionRepo.crear(
-                    Rendicion(
-                        numero = "",                          // el servidor asigna RND-2026-0000NN
-                        usuarioId = usuarioId,
-                        titulo = actual.titulo.trim(),
-                        tipo = actual.tipo,
-                        destino = actual.destino.trim().takeIf { actual.tipo == TipoRendicion.COMISION_SERVICIO },
-                        desde = actual.desde!!,               // !! es seguro: el validador ya revisó que no sean null
-                        hasta = actual.hasta!!,
-                        centroCosto = actual.centroCosto!!,
-                        observacion = actual.observacion.trim().ifBlank { null }
-                    )
+                val datos = Rendicion(
+                    numero = "",                          // el servidor asigna RND-2026-0000NN
+                    usuarioId = usuarioId,
+                    titulo = actual.titulo.trim(),
+                    tipo = actual.tipo,
+                    destino = actual.destino.trim().takeIf { actual.tipo == TipoRendicion.COMISION_SERVICIO },
+                    desde = actual.desde!!,               // !! es seguro: el validador ya revisó que no sean null
+                    hasta = actual.hasta!!,
+                    centroCosto = actual.centroCosto!!,
+                    observacion = actual.observacion.trim().ifBlank { null }
                 )
+                val editando = original
+                val id = if (editando == null) {
+                    rendicionRepo.crear(datos)                                  // POST: nueva
+                } else {
+                    // PUT: se conservan id, número, estado y dueño; cambian solo los datos del formulario
+                    rendicionRepo.actualizar(datos.copy(id = editando.id, numero = editando.numero,
+                        usuarioId = editando.usuarioId, estado = editando.estado))
+                    editando.id
+                }
                 _estado.update { it.copy(guardando = false, guardadaId = id) }
             } catch (e: Exception) {
                 // El servidor rechazó la rendición (400) o no hay conexión

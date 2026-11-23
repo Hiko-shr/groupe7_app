@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit
 // En un teléfono real, cambia 10.0.2.2 por la IP de tu PC (ipconfig → IPv4).
 object RetrofitClient {
 
-    private const val HOST = "http://localhost"
+    private const val HOST = "http://10.0.2.2"
     const val URL_USUARIOS = "$HOST:8081/"
-    const val URL_RENDICIONES = "$HOST:8082/"
+    const val URL_RENDICIONES = "$HOST:8084/"
 
     // Muestra en Logcat cada petición y respuesta (filtra por "okhttp")
     private val cliente: OkHttpClient by lazy {
