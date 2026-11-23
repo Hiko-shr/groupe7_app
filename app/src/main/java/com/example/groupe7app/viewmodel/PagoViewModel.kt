@@ -9,6 +9,7 @@ import com.example.groupe7app.model.repository.GastoRepository
 import com.example.groupe7app.model.repository.RendicionRepository
 import com.example.groupe7app.model.repository.UsuarioRepository
 import com.example.groupe7app.model.validation.FinanzasValidator
+import com.example.groupe7app.model.remote.mensajeApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -78,21 +79,26 @@ class PagoViewModel(
             val usuarioId = session.usuarioId.first() ?: return@launch
             formulario.update { it.copy(guardando = true) }
             val numero = actual.numeroOperacion.trim()
-            rendicionRepo.registrarPago(
-                Pago(
-                    fecha = LocalDate.now(),
-                    numeroOperacion = numero,
-                    monto = actual.total,
-                    observacion = actual.observacion.trim().ifBlank { null },
-                    usuarioFinanzasId = usuarioId
-                ),
-                rendiciones
-            )
-            // Formulario limpio y mensaje de confirmación; las rendiciones pagadas salen solas de la lista
-            intentoGuardar = false
-            formulario.value = Formulario(
-                mensaje = "Pago $numero registrado: ${rendiciones.size} rendición(es) quedaron pagadas"
-            )
+            try {
+                rendicionRepo.registrarPago(
+                    Pago(
+                        fecha = LocalDate.now(),
+                        numeroOperacion = numero,
+                        monto = actual.total,
+                        observacion = actual.observacion.trim().ifBlank { null },
+                        usuarioFinanzasId = usuarioId
+                    ),
+                    rendiciones
+                )
+                // Formulario limpio y mensaje de confirmación; las rendiciones pagadas salen solas de la lista
+                intentoGuardar = false
+                formulario.value = Formulario(
+                    mensaje = "Pago $numero registrado: ${rendiciones.size} rendición(es) quedaron pagadas"
+                )
+            } catch (e: Exception) {
+                formulario.update { it.copy(guardando = false) }
+                Avisos.mostrar(e.mensajeApi())
+            }
         }
     }
 

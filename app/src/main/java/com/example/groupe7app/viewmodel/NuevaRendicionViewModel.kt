@@ -8,6 +8,7 @@ import com.example.groupe7app.model.preferences.SessionManager
 import com.example.groupe7app.model.repository.CatalogoRepository
 import com.example.groupe7app.model.repository.RendicionRepository
 import com.example.groupe7app.model.validation.RendicionValidator
+import com.example.groupe7app.model.remote.mensajeApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,20 +54,26 @@ class NuevaRendicionViewModel(
         viewModelScope.launch {
             val usuarioId = session.usuarioId.first() ?: return@launch
             _estado.update { it.copy(guardando = true) }
-            val id = rendicionRepo.crear(
-                Rendicion(
-                    numero = "",                          // el repositorio asigna RND-2026-0000NN
-                    usuarioId = usuarioId,
-                    titulo = actual.titulo.trim(),
-                    tipo = actual.tipo,
-                    destino = actual.destino.trim().takeIf { actual.tipo == TipoRendicion.COMISION_SERVICIO },
-                    desde = actual.desde!!,               // !! es seguro: el validador ya revisó que no sean null
-                    hasta = actual.hasta!!,
-                    centroCosto = actual.centroCosto!!,
-                    observacion = actual.observacion.trim().ifBlank { null }
+            try {
+                val id = rendicionRepo.crear(
+                    Rendicion(
+                        numero = "",                          // el servidor asigna RND-2026-0000NN
+                        usuarioId = usuarioId,
+                        titulo = actual.titulo.trim(),
+                        tipo = actual.tipo,
+                        destino = actual.destino.trim().takeIf { actual.tipo == TipoRendicion.COMISION_SERVICIO },
+                        desde = actual.desde!!,               // !! es seguro: el validador ya revisó que no sean null
+                        hasta = actual.hasta!!,
+                        centroCosto = actual.centroCosto!!,
+                        observacion = actual.observacion.trim().ifBlank { null }
+                    )
                 )
-            )
-            _estado.update { it.copy(guardando = false, guardadaId = id) }
+                _estado.update { it.copy(guardando = false, guardadaId = id) }
+            } catch (e: Exception) {
+                // El servidor rechazó la rendición (400) o no hay conexión
+                _estado.update { it.copy(guardando = false) }
+                Avisos.mostrar(e.mensajeApi())
+            }
         }
     }
 

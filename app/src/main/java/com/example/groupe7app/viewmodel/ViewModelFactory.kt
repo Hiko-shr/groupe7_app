@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.groupe7app.model.database.AppDatabase
 import com.example.groupe7app.model.preferences.SessionManager
+import com.example.groupe7app.model.remote.RetrofitClient
 import com.example.groupe7app.model.repository.CatalogoRepository
 import com.example.groupe7app.model.repository.GastoRepository
 import com.example.groupe7app.model.repository.RendicionRepository
@@ -16,10 +17,16 @@ class ViewModelFactory(private val app: Application) : ViewModelProvider.Factory
     // "by lazy": se crea la primera vez que alguien lo usa, no antes
     private val db by lazy { AppDatabase.getInstance(app) }
     private val session by lazy { SessionManager(app) }
-    private val usuarioRepo by lazy { UsuarioRepository(db.usuarioDao()) }
-    private val catalogoRepo by lazy { CatalogoRepository(db.categoriaDao(), db.centroCostoDao()) }
-    private val rendicionRepo by lazy { RendicionRepository(db) }
-    private val gastoRepo by lazy { GastoRepository(db) }
+
+    // Los dos microservicios (Retrofit)
+    private val usuariosApi by lazy { RetrofitClient.usuariosApi }
+    private val rendicionesApi by lazy { RetrofitClient.rendicionesApi }
+
+    // Cada repositorio recibe Room (la copia local) y la API (la fuente de verdad)
+    private val usuarioRepo by lazy { UsuarioRepository(db.usuarioDao(), usuariosApi) }
+    private val catalogoRepo by lazy { CatalogoRepository(db.categoriaDao(), db.centroCostoDao(), rendicionesApi) }
+    private val rendicionRepo by lazy { RendicionRepository(db, rendicionesApi, usuariosApi) }
+    private val gastoRepo by lazy { GastoRepository(db, rendicionesApi, usuariosApi) }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

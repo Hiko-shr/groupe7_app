@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.retrofit)          // cliente HTTP
+    implementation(libs.retrofit.gson)     // JSON ↔ data class
+    implementation(libs.okhttp.logging)    // ver las peticiones en Logcat
 
     // Íconos extendidos
     implementation("androidx.compose.material:material-icons-extended:1.6.8")

@@ -1,6 +1,7 @@
 package com.example.groupe7app.model.dao
 
 import androidx.room.Dao
+import androidx.room.Upsert
 import androidx.room.Insert
 import com.example.groupe7app.model.entity.Pago
 
@@ -8,4 +9,7 @@ import com.example.groupe7app.model.entity.Pago
 interface PagoDao {
     @Insert
     suspend fun insertar(pago: Pago): Long
+
+    @Upsert
+    suspend fun guardar(pago: Pago)
 }

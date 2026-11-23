@@ -1,6 +1,7 @@
 package com.example.groupe7app.model.dao
 
 import androidx.room.Dao
+import androidx.room.Upsert
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
@@ -79,4 +80,14 @@ interface GastoDao {
 
     @Delete
     suspend fun eliminar(gasto: Gasto)
+
+    // ---------- Sincronización con ms-rendiciones ----------
+    @Upsert
+    suspend fun guardar(gasto: Gasto)
+
+    @Upsert
+    suspend fun guardarTodos(gastos: List<Gasto>)
+
+    @Query("DELETE FROM gastos WHERE rendicionId = :rendicionId AND id NOT IN (:ids)")
+    suspend fun eliminarDeRendicionExcepto(rendicionId: Long, ids: List<Long>)
 }

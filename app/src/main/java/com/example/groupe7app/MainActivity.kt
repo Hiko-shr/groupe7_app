@@ -10,15 +10,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.groupe7app.model.database.AppDatabase
-import com.example.groupe7app.model.database.DataSeeder
 import com.example.groupe7app.ui.navigation.AppNavigation
 import com.example.groupe7app.ui.theme.Groupe7AppTheme
 import com.example.groupe7app.viewmodel.SesionViewModel
 import com.example.groupe7app.viewmodel.ViewModelFactory
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -27,10 +23,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        lifecycleScope.launch {
-            DataSeeder(AppDatabase.getInstance(this@MainActivity)).poblarSiEstaVacia()
-        }
 
         setContent {
             // Es el mismo SesionViewModel que usa AppNavigation (ambos pertenecen a esta Activity)

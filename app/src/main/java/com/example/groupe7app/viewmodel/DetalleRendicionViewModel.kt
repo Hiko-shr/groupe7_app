@@ -9,6 +9,7 @@ import com.example.groupe7app.model.preferences.SessionManager
 import com.example.groupe7app.model.repository.CatalogoRepository
 import com.example.groupe7app.model.repository.GastoRepository
 import com.example.groupe7app.model.repository.RendicionRepository
+import com.example.groupe7app.model.remote.mensajeApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -97,8 +98,13 @@ class DetalleRendicionViewModel(
         val rendicion = estado.value.rendicion ?: return
         viewModelScope.launch {
             val usuarioId = session.usuarioId.first() ?: return@launch
-            rendicionRepo.enviar(rendicion, usuarioId)      // gastos → ENVIADO, rendición → ENVIADA + historial
-            envio.update { it.copy(mostrarConfirmacion = false, enviada = true) }
+            try {
+                rendicionRepo.enviar(rendicion, usuarioId)  // el servidor: gastos → ENVIADO, rendición → ENVIADA + historial
+                envio.update { it.copy(mostrarConfirmacion = false, enviada = true) }
+            } catch (e: Exception) {
+                // El mensaje del servidor (por ejemplo "Agrega al menos un gasto") se muestra bajo el botón
+                envio.update { it.copy(mostrarConfirmacion = false, error = e.mensajeApi()) }
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ import com.example.groupe7app.model.repository.GastoRepository
 import com.example.groupe7app.model.repository.RendicionRepository
 import com.example.groupe7app.model.repository.UsuarioRepository
 import com.example.groupe7app.model.validation.FinanzasValidator
+import com.example.groupe7app.model.remote.mensajeApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -95,13 +96,18 @@ class RevisionFinanzasViewModel(
 
         viewModelScope.launch {
             val usuarioId = session.usuarioId.first() ?: return@launch
-            when (dialogo) {
-                DialogoFinanzas.APROBAR -> rendicionRepo.aprobarFinanzas(rendicion, usuarioId)
-                DialogoFinanzas.RECHAZAR -> rendicionRepo.cambiarEstado(
-                    rendicion, EstadoRendicion.RECHAZADA, usuarioId, actual.comentario.trim()
-                )
+            try {
+                when (dialogo) {
+                    DialogoFinanzas.APROBAR -> rendicionRepo.aprobarFinanzas(rendicion, usuarioId)
+                    DialogoFinanzas.RECHAZAR -> rendicionRepo.cambiarEstado(
+                        rendicion, EstadoRendicion.RECHAZADA, usuarioId, actual.comentario.trim()
+                    )
+                }
+                formulario.update { it.copy(dialogo = null, finalizada = true) }
+            } catch (e: Exception) {
+                formulario.update { it.copy(dialogo = null) }
+                Avisos.mostrar(e.mensajeApi())
             }
-            formulario.update { it.copy(dialogo = null, finalizada = true) }
         }
     }
 }

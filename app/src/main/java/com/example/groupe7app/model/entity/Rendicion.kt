@@ -1,7 +1,6 @@
 package com.example.groupe7app.model.entity
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.groupe7app.model.enums.EstadoRendicion
@@ -9,15 +8,12 @@ import com.example.groupe7app.model.enums.TipoRendicion
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+// Room ahora es una copia local (caché) de lo que está en ms-rendiciones.
+// Sin claves foráneas: la integridad la garantiza MySQL en el servidor, y así se pueden guardar
+// rendiciones de otros usuarios (bandeja de la jefatura) sin tener a todos los usuarios en el teléfono.
 @Entity(
     tableName = "rendiciones",
-    foreignKeys = [
-        ForeignKey(entity = Usuario::class, parentColumns = ["id"], childColumns = ["usuarioId"]),
-        ForeignKey(entity = CentroCosto::class, parentColumns = ["codigo"], childColumns = ["centroCosto"]),
-        ForeignKey(entity = Pago::class, parentColumns = ["id"], childColumns = ["pagoId"],
-            onDelete = ForeignKey.SET_NULL)
-    ],
-    indices = [Index("usuarioId"), Index("centroCosto"), Index("pagoId")]
+    indices = [Index("usuarioId"), Index("estado")]
 )
 data class Rendicion(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

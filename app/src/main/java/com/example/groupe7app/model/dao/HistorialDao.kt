@@ -1,6 +1,7 @@
 package com.example.groupe7app.model.dao
 
 import androidx.room.Dao
+import androidx.room.Upsert
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.groupe7app.model.entity.HistorialEstado
@@ -13,4 +14,11 @@ interface HistorialDao {
 
     @Insert
     suspend fun insertar(registro: HistorialEstado)
+
+    // ---------- Sincronización con ms-rendiciones ----------
+    @Upsert
+    suspend fun guardarTodos(registros: List<HistorialEstado>)
+
+    @Query("DELETE FROM historial_estados WHERE rendicionId = :rendicionId AND id NOT IN (:ids)")
+    suspend fun eliminarDeRendicionExcepto(rendicionId: Long, ids: List<Long>)
 }

@@ -1,7 +1,6 @@
 package com.example.groupe7app.model.entity
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.groupe7app.model.enums.EstadoGasto
@@ -10,18 +9,11 @@ import com.example.groupe7app.model.enums.MotivoRechazo
 import com.example.groupe7app.model.enums.TipoDocumento
 import java.time.LocalDate
 
+// Copia local de ms-rendiciones. Las reglas de integridad (rendición existente, categoría existente,
+// RUT + folio único) ahora las aplica MySQL en el servidor.
 @Entity(
     tableName = "gastos",
-    foreignKeys = [
-        ForeignKey(entity = Rendicion::class, parentColumns = ["id"], childColumns = ["rendicionId"],
-            onDelete = ForeignKey.CASCADE),
-        ForeignKey(entity = Categoria::class, parentColumns = ["id"], childColumns = ["categoriaId"])
-    ],
-    indices = [
-        Index("rendicionId"),
-        Index("categoriaId"),
-        Index(value = ["rutEmisor", "folio"], unique = true)   // regla RN-02: RUT + folio no se repite
-    ]
+    indices = [Index("rendicionId"), Index("categoriaId")]
 )
 data class Gasto(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

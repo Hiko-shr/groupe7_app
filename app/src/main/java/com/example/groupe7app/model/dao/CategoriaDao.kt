@@ -1,6 +1,7 @@
 package com.example.groupe7app.model.dao
 
 import androidx.room.Dao
+import androidx.room.Upsert
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.groupe7app.model.entity.Categoria
@@ -16,4 +17,12 @@ interface CategoriaDao {
 
     @Insert
     suspend fun insertarTodas(categorias: List<Categoria>)
+
+    // ---------- Sincronización con ms-rendiciones ----------
+    @Upsert
+    suspend fun guardarTodas(categorias: List<Categoria>)
+
+    // Borra las que ya no existen en el servidor
+    @Query("DELETE FROM categorias WHERE id NOT IN (:ids)")
+    suspend fun eliminarExcepto(ids: List<Long>)
 }

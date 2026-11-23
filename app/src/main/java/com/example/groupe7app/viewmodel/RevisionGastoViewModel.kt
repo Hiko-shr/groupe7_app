@@ -12,6 +12,7 @@ import com.example.groupe7app.model.repository.GastoRepository
 import com.example.groupe7app.model.repository.RendicionRepository
 import com.example.groupe7app.model.repository.UsuarioRepository
 import com.example.groupe7app.model.validation.ResolucionValidator
+import com.example.groupe7app.model.remote.mensajeApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -81,15 +82,20 @@ class RevisionGastoViewModel(
             val jefaturaId = session.usuarioId.first() ?: return@launch
             _estado.update { it.copy(guardando = true) }
             val decision = actual.decision!!               // seguro: el validador revisó que no sea null
-            gastoRepo.resolver(
-                gasto = gasto,
-                nuevo = estadoPara(decision),
-                usuarioId = jefaturaId,
-                montoAprobado = if (decision == Decision.APROBAR) actual.montoAprobado.toInt() else null,
-                comentario = actual.comentario.trim().ifBlank { null },
-                motivo = if (decision == Decision.RECHAZAR) actual.motivo else null
-            )
-            _estado.update { it.copy(guardando = false, guardado = true) }
+            try {
+                gastoRepo.resolver(
+                    gasto = gasto,
+                    nuevo = estadoPara(decision),
+                    usuarioId = jefaturaId,
+                    montoAprobado = if (decision == Decision.APROBAR) actual.montoAprobado.toInt() else null,
+                    comentario = actual.comentario.trim().ifBlank { null },
+                    motivo = if (decision == Decision.RECHAZAR) actual.motivo else null
+                )
+                _estado.update { it.copy(guardando = false, guardado = true) }
+            } catch (e: Exception) {
+                _estado.update { it.copy(guardando = false) }
+                Avisos.mostrar(e.mensajeApi())
+            }
         }
     }
 

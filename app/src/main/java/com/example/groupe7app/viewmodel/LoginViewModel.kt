@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.groupe7app.model.preferences.SessionManager
 import com.example.groupe7app.model.repository.UsuarioRepository
 import com.example.groupe7app.model.validation.LoginValidator
+import com.example.groupe7app.model.remote.mensajeApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,12 +55,18 @@ class LoginViewModel(
 
         viewModelScope.launch {
             _estado.update { it.copy(cargando = true) }
-            val usuario = usuarioRepo.autenticar(actual.correo, actual.clave)
-            if (usuario == null) {
-                _estado.update { it.copy(cargando = false, errorGeneral = "Correo o contraseña incorrectos") }
-            } else {
-                session.iniciarSesion(usuario.id)
-                _estado.update { it.copy(cargando = false, rolIngresado = usuario.rol) }
+            try {
+                // Ahora el login lo valida ms-usuarios
+                val usuario = usuarioRepo.autenticar(actual.correo, actual.clave)
+                if (usuario == null) {
+                    _estado.update { it.copy(cargando = false, errorGeneral = "Correo o contraseña incorrectos") }
+                } else {
+                    session.iniciarSesion(usuario.id)
+                    _estado.update { it.copy(cargando = false, rolIngresado = usuario.rol) }
+                }
+            } catch (e: Exception) {
+                // Sin conexión o servidor apagado: se muestra en la misma tarjeta roja del login
+                _estado.update { it.copy(cargando = false, errorGeneral = e.mensajeApi()) }
             }
         }
     }
@@ -68,4 +75,4 @@ class LoginViewModel(
     fun limpiar() {
         _estado.value = LoginUiState()
     }
-}   // ← última llave: limpiar() tiene que quedar ANTES de esta
+}

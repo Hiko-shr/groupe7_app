@@ -1,6 +1,7 @@
 package com.example.groupe7app.model.dao
 
 import androidx.room.Dao
+import androidx.room.Upsert
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
@@ -43,4 +44,21 @@ interface RendicionDao {
 
     @Delete
     suspend fun eliminar(rendicion: Rendicion)
+
+    // ---------- Sincronización con ms-rendiciones ----------
+    @Upsert
+    suspend fun guardar(rendicion: Rendicion)
+
+    @Upsert
+    suspend fun guardarTodas(rendiciones: List<Rendicion>)
+
+    // Al refrescar una lista, se borran de la copia local las que el servidor ya no incluye en ella
+    @Query("DELETE FROM rendiciones WHERE usuarioId = :usuarioId AND id NOT IN (:ids)")
+    suspend fun eliminarDeUsuarioExcepto(usuarioId: Long, ids: List<Long>)
+
+    @Query("DELETE FROM rendiciones WHERE estado = :estado AND id NOT IN (:ids)")
+    suspend fun eliminarEnEstadoExcepto(estado: EstadoRendicion, ids: List<Long>)
+
+    @Query("DELETE FROM rendiciones WHERE estado = 'ENVIADA' AND usuarioId IN (:usuarioIds) AND id NOT IN (:ids)")
+    suspend fun eliminarEnviadasDeEquipoExcepto(usuarioIds: List<Long>, ids: List<Long>)
 }

@@ -1,17 +1,12 @@
 package com.example.groupe7app.model.entity
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
 @Entity(
     tableName = "historial_estados",
-    foreignKeys = [
-        ForeignKey(entity = Rendicion::class, parentColumns = ["id"], childColumns = ["rendicionId"],
-            onDelete = ForeignKey.CASCADE)
-    ],
     indices = [Index("rendicionId")]
 )
 data class HistorialEstado(

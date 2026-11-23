@@ -25,7 +25,7 @@ import com.example.groupe7app.model.entity.Usuario
         Usuario::class, CentroCosto::class, Categoria::class,
         Pago::class, Rendicion::class, Gasto::class, HistorialEstado::class
     ],
-    version = 1,
+    version = 2,                 // 2: Room pasa a ser caché del backend (sin claves foráneas)
     exportSchema = false
 )
 @TypeConverters(Converters::class)

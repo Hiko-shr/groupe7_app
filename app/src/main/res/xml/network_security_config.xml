@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 9+ bloquea http:// por defecto. Solo se permite hacia el computador donde corren los microservicios -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>      <!-- el computador visto desde el emulador -->
+        <domain includeSubdomains="false">localhost</domain>
+        <!-- Si pruebas en un teléfono real, agrega aquí la IP de tu PC, por ejemplo: -->
+        <!-- <domain includeSubdomains="false">192.168.1.50</domain> -->
+    </domain-config>
+</network-security-config>

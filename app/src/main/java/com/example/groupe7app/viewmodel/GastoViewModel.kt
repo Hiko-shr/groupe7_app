@@ -1,6 +1,5 @@
 package com.example.groupe7app.viewmodel
 
-import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.groupe7app.model.entity.Categoria
@@ -15,6 +14,8 @@ import com.example.groupe7app.model.repository.RendicionRepository
 import com.example.groupe7app.model.repository.UsuarioRepository
 import com.example.groupe7app.model.rules.ResultadoTope
 import com.example.groupe7app.model.rules.TopeCalculator
+import com.example.groupe7app.model.remote.codigoHttp
+import com.example.groupe7app.model.remote.mensajeApi
 import com.example.groupe7app.model.validation.GastoValidator
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -153,15 +154,18 @@ class GastoViewModel(
             _estado.update { it.copy(errores = errores) }
             if (errores.hayErrores()) return@launch
 
-            // 4) Guardar en Room
+            // 4) Guardar: primero en ms-rendiciones (que vuelve a validar), luego la copia en Room
             _estado.update { it.copy(guardando = true) }
             try {
                 gastoRepo.guardar(construirGasto(actual, tope))
                 _estado.update { it.copy(guardando = false, guardado = true) }
-            } catch (e: SQLiteConstraintException) {
-                // Respaldo: el índice único de la tabla también impide el duplicado
-                _estado.update {
-                    it.copy(guardando = false, errores = it.errores.copy(folio = "Este comprobante ya fue rendido"))
+            } catch (e: Exception) {
+                if (e.codigoHttp() == 409) {
+                    // El servidor detectó el duplicado RUT + folio (o el gasto ya no se puede editar)
+                    _estado.update { it.copy(guardando = false, errores = it.errores.copy(folio = e.mensajeApi())) }
+                } else {
+                    _estado.update { it.copy(guardando = false) }
+                    Avisos.mostrar(e.mensajeApi())
                 }
             }
         }

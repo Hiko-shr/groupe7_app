@@ -1,6 +1,7 @@
 package com.example.groupe7app.model.dao
 
 import androidx.room.Dao
+import androidx.room.Upsert
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.groupe7app.model.entity.Usuario
@@ -30,4 +31,12 @@ interface UsuarioDao {
 
     @Insert
     suspend fun insertarTodos(usuarios: List<Usuario>)
+
+    // ---------- Sincronización con ms-usuarios ----------
+    // @Upsert = inserta si el id no existe, actualiza si ya existe
+    @Upsert
+    suspend fun guardar(usuario: Usuario)
+
+    @Upsert
+    suspend fun guardarTodos(usuarios: List<Usuario>)
 }

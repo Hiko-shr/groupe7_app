@@ -10,6 +10,7 @@ import com.example.groupe7app.model.repository.CatalogoRepository
 import com.example.groupe7app.model.repository.GastoRepository
 import com.example.groupe7app.model.repository.RendicionRepository
 import com.example.groupe7app.model.repository.UsuarioRepository
+import com.example.groupe7app.model.remote.mensajeApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -99,8 +100,13 @@ class RevisionRendicionViewModel(
                 EstadoRendicion.RECHAZADA -> "Rechazada por jefatura"
                 else -> "Aprobada por jefatura"
             }
-            rendicionRepo.cambiarEstado(rendicion, resultado, jefaturaId, comentario)
-            dialogo.update { Dialogo(mostrar = false, finalizada = true) }
+            try {
+                rendicionRepo.cambiarEstado(rendicion, resultado, jefaturaId, comentario)
+                dialogo.update { Dialogo(mostrar = false, finalizada = true) }
+            } catch (e: Exception) {
+                dialogo.update { it.copy(mostrar = false) }
+                Avisos.mostrar(e.mensajeApi())
+            }
         }
     }
 }
